@@ -139,7 +139,7 @@ namespace ConsoleDiscordBot
             for (int i = 0; i < offsetHalfHoursToDisplay * 2 + 1; i++)
             {
                 string option = startTime.ToString("HH:mm");
-                option += " " + startTime.ToString("dd.MM");
+                option += " " + startTime.ToString("dd.MM.yyyy");
 
                 if (startTime >= DateTimeOffset.Now)
                     optionsDropdown.Add(new DiscordSelectComponentOption(option, option));

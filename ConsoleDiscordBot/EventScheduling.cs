@@ -128,7 +128,15 @@ namespace ConsoleDiscordBot
                 case "eventScheduling_time":
                     if (interaction.Data.Values.Length != 1)
                         break;
-                    poll.RegisterUser(user, DateTime.Parse(interaction.Data.Values[0]));
+                    if (!DateTime.TryParse(interaction.Data.Values[0], out DateTime selectedTime))
+                    {
+                        await interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                        .WithContent($"The selected Date/Time \"{interaction.Data.Values[0]}\" could not be parsed correctly. Contact the Bot owner.")
+                        .AsEphemeral(true)
+                        );
+                        return;
+                    }
+                    poll.RegisterUser(user, selectedTime);
                     break;
             }
             
