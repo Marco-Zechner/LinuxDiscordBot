@@ -5,38 +5,20 @@ namespace ConsoleDiscordBot
 {
     public static class DataHandler<T> where T : class
     {
-        private const string prefix = "";
-        private const string suffix = "";
         private static string ConvertDataToString(T data)
         {
-            //convert to json
-            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-
-            ////convert to base64 string
-            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json);
-
-            //string base64 = Convert.ToBase64String(bytes);
-
-
-            return $"{prefix}{json}{suffix}";
+            return JsonConvert.SerializeObject(data, Formatting.Indented);
         }
         private static T ConvertStringToData(string data)
         {
-            string base64 = data[prefix.Length..][..^suffix.Length];
-            //byte[] bytes = Convert.FromBase64String(base64);
-
-            //string json = System.Text.Encoding.UTF8.GetString(bytes);
-
-            return JsonConvert.DeserializeObject<T>(base64);
+            return JsonConvert.DeserializeObject<T>(data);
         }
 
         private static readonly Dictionary<ulong, T> store = [];
 
         public static void Add(ulong id, T data)
         {
-
             store[id] = data;
-
         }
 
         public static T? Get(ulong id)
@@ -68,8 +50,5 @@ namespace ConsoleDiscordBot
             }
             return data;
         }
-
-
     }
-
 }

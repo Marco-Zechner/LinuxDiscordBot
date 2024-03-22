@@ -9,14 +9,13 @@ namespace DiscordBot
         
         public async Task ReadJson()
         {
-            using (StreamReader sr = new StreamReader("config.json"))
-            {
-                string json = await sr.ReadToEndAsync();
-                JSONStructure data = JsonConvert.DeserializeObject<JSONStructure>(json);
+            using StreamReader sr = new("config.json");
 
-                Token = data.Token;
-                Prefix = data.Prefix;
-            }
+            string json = await sr.ReadToEndAsync();
+            JSONStructure data = JsonConvert.DeserializeObject<JSONStructure>(json);
+
+            Token = data.Token;
+            Prefix = data.Prefix;
         }
     }
 

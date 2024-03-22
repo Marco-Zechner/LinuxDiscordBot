@@ -60,7 +60,6 @@ namespace ConsoleDiscordBot
 
         private DiscordEmbedBuilder CreateEmbed()
         {
-
             var embed = new DiscordEmbedBuilder
             {
                 Title = $"{SuggestedDateTime:dd.MM.yyyy}",
@@ -86,7 +85,6 @@ namespace ConsoleDiscordBot
 
             foreach (var eventUser in eventUsers)
             {
-
                 string fieldNameToAddTo = "Marco messed Up";
                 string fieldValueToAdd = $"{eventUser.UserMention}\n";
 
@@ -94,8 +92,7 @@ namespace ConsoleDiscordBot
                 {
                     case EventUserState.Registered:
                         fieldNameToAddTo = eventUser.SelectedTime.ToString("HH:mm");
-                        //if (eventUser.SelectedTime.Date != SuggestedDateTime.Date)
-                            fieldNameToAddTo += eventUser.SelectedTime.ToString(" dd.MM");
+                        fieldNameToAddTo += eventUser.SelectedTime.ToString(" dd.MM");
                         break;
                     case EventUserState.Expected:
                         fieldNameToAddTo = "Expected";
@@ -142,9 +139,7 @@ namespace ConsoleDiscordBot
             for (int i = 0; i < offsetHalfHoursToDisplay * 2 + 1; i++)
             {
                 string option = startTime.ToString("HH:mm");
-
-                if (startTime.Date != SuggestedDateTime.Date)
-                    option += " " + startTime.ToString("dd.MM");
+                option += " " + startTime.ToString("dd.MM");
 
                 if (startTime >= DateTimeOffset.Now)
                     optionsDropdown.Add(new DiscordSelectComponentOption(option, option));

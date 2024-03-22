@@ -26,7 +26,7 @@ namespace ConsoleDiscordBot
             {
                 date = DateTime.Now.ToString("dd.MM.yyyy");
             }
-            
+
             if (!DateTime.TryParse($"{date} {suggestedTime}", out DateTime suggestedDateTime))
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder()

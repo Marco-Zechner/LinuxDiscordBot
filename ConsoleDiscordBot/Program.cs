@@ -1,13 +1,8 @@
-﻿using DiscordBot;
-using DSharpPlus;
-using DSharpPlus.Interactivity.Extensions;
-using DSharpPlus.Interactivity;
-
-namespace ConsoleDiscordBot
+﻿namespace ConsoleDiscordBot
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             await Bot.Setup();
         }
