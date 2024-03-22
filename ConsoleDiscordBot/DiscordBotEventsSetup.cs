@@ -11,6 +11,7 @@ namespace ConsoleDiscordBot
             Bot.Client.ComponentInteractionCreated += InteractionsHandler.Client_ComponentInteractionCreated;
 
             slashCommands.RegisterCommands<EventScheduling>();
+            slashCommands.RegisterCommands<Updater>();
         }
     }
 }

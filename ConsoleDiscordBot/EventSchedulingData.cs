@@ -171,7 +171,7 @@ namespace ConsoleDiscordBot
 
             eventUsers.Add(eventUser);
         }
-
+        
         public void UnregisterUser(DiscordMember user)
         {
             EventUser eventUser = eventUsers.FirstOrDefault(eu => eu.UserMention.Equals(user.Mention), null) ?? new EventUser(user.Mention, SuggestedDateTime);

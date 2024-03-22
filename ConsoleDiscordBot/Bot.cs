@@ -18,14 +18,12 @@ namespace ConsoleDiscordBot
             {
                 return;
             }
-
-            var jsonReader = new JSONReader();
-            await jsonReader.ReadJson();
+            await JSONReader.ReadJson();
 
             var discordConfig = new DiscordConfiguration()
             {
                 Intents = DiscordIntents.All,
-                Token = jsonReader.Token,
+                Token = JSONReader.Token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true
             };

@@ -4,10 +4,11 @@ namespace DiscordBot
 {
     internal class JSONReader
     {
-        public string Token { get; set; }
-        public string Prefix { get; set; }
-        
-        public async Task ReadJson()
+        public static string Token { get; set; }
+        public static string Prefix { get; set; }
+
+
+        public static async Task ReadJson()
         {
             using StreamReader sr = new("config.json");
 
