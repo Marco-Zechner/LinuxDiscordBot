@@ -11,7 +11,7 @@ namespace ConsoleDiscordBot
         // major - a feature completed
         // minor - new features added
         // hotfix - bug fixes, small changes
-        public const string Version = "1.1.1";
+        public const string Version = "1.2.0";
         class UpdateBotInfo
         {
             public ulong ChannelID { get; set; }
@@ -33,8 +33,14 @@ namespace ConsoleDiscordBot
 
             File.WriteAllText($"{exeFolderPath}/updateBotInfo.json", JsonConvert.SerializeObject(info));
 
+            string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"{info.CurrentVersion}", $"Bot will now restart and attempt to update.\nThis will take around 1 minute.");
+
             await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .WithContent($"Bot currently on Version {info.CurrentVersion}\n Bot will now attempt to restart and update."));
+                .AddEmbed(new DiscordEmbedBuilder()
+                {
+                    Description = $"```{infoBox}```"
+                })
+                );
             
             Environment.Exit(1);
         }
