@@ -72,9 +72,7 @@ namespace ConsoleDiscordBot
                 embed.ImageUrl = BackgroundUrl;
             }
 
-            List<KeyValuePair<string, string>> fields = CreateFields().ToList();
-
-
+            List<KeyValuePair<string, string>> fields = CreateFields();
 
             foreach (var fieldData in fields)
             {
@@ -83,9 +81,10 @@ namespace ConsoleDiscordBot
             return embed;
         }
 
-        private Dictionary<string, string> CreateFields()
+        private List<KeyValuePair<string, string>> CreateFields()
         {
             Dictionary<string, string> fieldsToAdd = [];
+            Dictionary<DateTime, string> dateTimeFieldsToAdd = [];
 
             foreach (var eventUser in eventUsers)
             {
@@ -95,9 +94,16 @@ namespace ConsoleDiscordBot
                 switch (eventUser.State)
                 {
                     case EventUserState.Registered:
-                        fieldNameToAddTo = eventUser.SelectedTime.ToString("HH:mm");
-                        fieldNameToAddTo += eventUser.SelectedTime.ToString(" dd.MM");
-                        break;
+                        if (dateTimeFieldsToAdd.TryGetValue(eventUser.SelectedTime, out var dateTimeValue))
+                        {
+                            dateTimeFieldsToAdd[eventUser.SelectedTime] = dateTimeValue + fieldValueToAdd;
+                        }
+                        else
+                        {
+                            dateTimeFieldsToAdd.Add(eventUser.SelectedTime, fieldValueToAdd);
+                        }
+                        
+                        continue;
                     case EventUserState.Expected:
                         fieldNameToAddTo = "Expected";
                         break;
@@ -113,13 +119,26 @@ namespace ConsoleDiscordBot
                 if (fieldsToAdd.TryGetValue(fieldNameToAddTo, out var value))
                 {
                     fieldsToAdd[fieldNameToAddTo] = value + fieldValueToAdd;
-                    continue;
                 }
-
-                fieldsToAdd.Add(fieldNameToAddTo, fieldValueToAdd);
+                else
+                {
+                    fieldsToAdd.Add(fieldNameToAddTo, fieldValueToAdd);
+                }
             }
 
-            return fieldsToAdd;
+            List<KeyValuePair<string, string>> orderedFields = [];
+
+            foreach (var date in dateTimeFieldsToAdd)
+            {
+                orderedFields.Add(new KeyValuePair<string,string>(date.Key.ToString("HH:mm dd.MM"), dateTimeFieldsToAdd[date.Key]));
+            }
+
+            foreach (var field in fieldsToAdd)
+            {
+                orderedFields.Add(new KeyValuePair<string,string>(field.Key, fieldsToAdd[field.Key]));
+            }
+
+            return orderedFields;
         }
 
         private DiscordComponent[] CreateButtons()

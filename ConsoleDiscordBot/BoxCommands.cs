@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ConsoleDiscordBot
 {
@@ -40,9 +41,19 @@ namespace ConsoleDiscordBot
 
             if (boxedMessage.Split('\n')[0].Length > 60)
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                    .WithContent($"```{boxedMessage}```")
+                try
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                        .WithContent($"```{boxedMessage}```")
+                        );
+                }
+                catch (Exception ex)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .WithContent($"Invalid Text\n```{ex.Message}```")
                     );
+                    return;
+                }
                 return;
             }
 
