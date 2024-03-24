@@ -133,6 +133,8 @@ namespace ConsoleDiscordBot
                 orderedFields.Add(new KeyValuePair<string,string>(date.Key.ToString("HH:mm dd.MM"), dateTimeFieldsToAdd[date.Key]));
             }
 
+            orderedFields.Sort((x, y) => x.Value.Length.CompareTo(y.Value.Length));
+
             foreach (var field in fieldsToAdd)
             {
                 orderedFields.Add(new KeyValuePair<string,string>(field.Key, fieldsToAdd[field.Key]));
