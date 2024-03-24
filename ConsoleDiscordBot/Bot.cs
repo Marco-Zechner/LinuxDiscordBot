@@ -41,6 +41,9 @@ namespace ConsoleDiscordBot
             DiscordBotEventsSetup.BeforeConnect(slashCommandsConfig);
 
             await Client.ConnectAsync();
+
+            await Updater.AfterStartUp();
+
             await Task.Delay(-1);
         }
 
