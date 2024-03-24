@@ -11,7 +11,7 @@ namespace ConsoleDiscordBot
         // major - a feature completed
         // minor - new features added
         // hotfix - bug fixes, small changes
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
         class UpdateBotInfo
         {
             public ulong ChannelID { get; set; }
@@ -56,11 +56,8 @@ namespace ConsoleDiscordBot
             {
                 UpdateBotInfo info = JsonConvert.DeserializeObject<UpdateBotInfo>(File.ReadAllText($"{exeFolderPath}/updateBotInfo.json"));
 
-                if (info.CurrentVersion != Version)
-                {
-                    DiscordChannel channel = await Bot.Client.GetChannelAsync(info.ChannelID);
-                    await channel.SendMessageAsync($"Bot has been updated to Version {Version}");
-                }
+                DiscordChannel channel = await Bot.Client.GetChannelAsync(info.ChannelID);
+                await channel.SendMessageAsync($"Bot has been updated from {info.CurrentVersion} to Version {Version}");
 
                 File.Delete($"{exeFolderPath}/updateBotInfo.json");
             }
