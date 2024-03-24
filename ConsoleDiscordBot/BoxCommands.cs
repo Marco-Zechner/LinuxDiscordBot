@@ -37,8 +37,8 @@ namespace ConsoleDiscordBot
             {
                 Author = new DiscordEmbedBuilder.EmbedAuthor
                 {
-                    Name = ctx.Client.CurrentUser.Mention,
-                    IconUrl = ctx.Client.CurrentUser.AvatarUrl
+                    Name = ctx.User.Username,
+                    IconUrl = ctx.User.AvatarUrl
                 },
                 Description = $"```{boxedMessage}```"
             })
