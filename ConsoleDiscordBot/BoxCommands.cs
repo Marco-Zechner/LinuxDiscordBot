@@ -28,9 +28,23 @@ namespace ConsoleDiscordBot
 
             await ctx.DeferAsync();
 
+            if (header.Length > 200 || content.Length > 800)
+            {
+                header = "No";
+                content = "Mona, NO!";
+            }
+
             string boxedMessage = CodeBoxDrawer.DrawBoxWithHeader(header, content, (float)headerAlignment, 
                 thickHeader: boxFormating == BoxFormating.thickHeader || boxFormating == BoxFormating.allThick,
                 thickContent: boxFormating == BoxFormating.thickContent || boxFormating == BoxFormating.allThick);
+
+            if (boxedMessage.Split('\n')[0].Length > 60)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .WithContent($"```{boxedMessage}```")
+                    );
+                return;
+            }
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder()
             .AddEmbed(new DiscordEmbedBuilder()

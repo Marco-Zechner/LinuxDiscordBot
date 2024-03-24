@@ -72,7 +72,11 @@ namespace ConsoleDiscordBot
                 embed.ImageUrl = BackgroundUrl;
             }
 
-            foreach (var fieldData in CreateFields())
+            List<KeyValuePair<string, string>> fields = CreateFields().ToList();
+
+
+
+            foreach (var fieldData in fields)
             {
                 embed.AddField(fieldData.Key, fieldData.Value, true);
             }
