@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using System.Globalization;
 
 namespace ConsoleDiscordBot
 {
@@ -27,10 +28,16 @@ namespace ConsoleDiscordBot
                 date = DateTime.Now.ToString("dd.MM.yyyy");
             }
 
-            if (!DateTime.TryParse($"{date} {suggestedTime}", out DateTime suggestedDateTime))
+            DateTime suggestedDateTime;
+
+            try
+            {
+                suggestedDateTime = DateTime.ParseExact($"{date} {suggestedTime}", "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture);
+            }
+            catch (Exception ex)
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .WithContent($"Invalid Time \"{suggestedTime}\" or Date \"{date}\". (date is optional)")
+                .WithContent($"Invalid Time \"{suggestedTime}\" or Date \"{date}\". (date is optional)\n```{ex.Message}```")
                 );
                 return;
             }
