@@ -1,6 +1,5 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ConsoleDiscordBot
 {

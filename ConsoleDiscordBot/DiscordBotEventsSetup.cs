@@ -13,6 +13,7 @@ namespace ConsoleDiscordBot
             slashCommands.RegisterCommands<EventScheduling>();
             slashCommands.RegisterCommands<Updater>();
             slashCommands.RegisterCommands<BoxCommands>();
+            slashCommands.RegisterCommands<DevConsoleCommands>();
         }
     }
 }

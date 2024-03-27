@@ -4,7 +4,6 @@ using DiscordBot;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
-using System.Diagnostics.Tracing;
 
 namespace ConsoleDiscordBot
 {
@@ -14,6 +13,8 @@ namespace ConsoleDiscordBot
 
         public static async Task Setup()
         {
+            await Updater.CheckForSleeping();
+
             if (Client?.IsConnected == true)
             {
                 return;
@@ -42,7 +43,7 @@ namespace ConsoleDiscordBot
 
             await Client.ConnectAsync();
 
-            await Updater.AfterStartUp();
+            await Updater.AfterConnect();
 
             await Task.Delay(-1);
         }

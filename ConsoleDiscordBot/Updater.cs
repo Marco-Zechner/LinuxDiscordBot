@@ -117,9 +117,7 @@ namespace ConsoleDiscordBot
 
             CurrentInfo.ChannelID = ctx.Channel.Id;
 
-            string exeFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-
-            File.WriteAllText($"{exeFolderPath}/updateBotInfo.json", JsonConvert.SerializeObject(CurrentInfo));
+            File.WriteAllText($"{Program.ExeFolderPath}/updateBotInfo.json", JsonConvert.SerializeObject(CurrentInfo));
 
             string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"{CurrentInfo}", $"Bot will now restart and attempt to update.\nThis will take around 1 minute.");
 
@@ -148,18 +146,48 @@ namespace ConsoleDiscordBot
                 );
         }
 
-        public static async Task AfterStartUp()
+        [SlashCommand("Sleep", "Let's the Bot sleep for x minutes. During this time you can use the local Version of the Bot.")]
+        public static async Task Sleep(InteractionContext ctx, [Option("Minutes", "How long the Bot should sleep.")] int minutes)
         {
-            string exeFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            await ctx.DeferAsync();
 
-            if (File.Exists($"{exeFolderPath}/updateBotInfo.json"))
+            File.WriteAllText($"{Program.ExeFolderPath}/sleeper.txt", JsonConvert.SerializeObject(minutes));
+
+            string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Sleep", $"Bot will now sleep for {minutes} minutes.");
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                .AddEmbed(new DiscordEmbedBuilder()
+                {
+                    Description = $"```{infoBox}```"
+                })
+                );
+
+            Environment.Exit(1);
+        }
+
+        public static async Task CheckForSleeping()
+        {
+            if (File.Exists($"{Program.ExeFolderPath}/sleeper.txt"))
             {
-                UpdateBotInfo info = JsonConvert.DeserializeObject<UpdateBotInfo>(File.ReadAllText($"{exeFolderPath}/updateBotInfo.json"));
+                int minutes = JsonConvert.DeserializeObject<int>(File.ReadAllText($"{Program.ExeFolderPath}/sleeper.txt"));
+
+                Console.WriteLine($"Bot is sleeping for {minutes} minutes.");
+
+                await Task.Delay(minutes * 60000);
+
+                File.Delete($"{Program.ExeFolderPath}/sleeper.txt");
+            }
+        }
+
+        public static async Task AfterConnect()
+        {
+            if (File.Exists($"{Program.ExeFolderPath}/updateBotInfo.json"))
+            {
+                UpdateBotInfo info = JsonConvert.DeserializeObject<UpdateBotInfo>(File.ReadAllText($"{Program.ExeFolderPath}/updateBotInfo.json"));
 
                 DiscordChannel channel = await Bot.Client.GetChannelAsync(info.ChannelID);
 
-                string infoBox = "";
-
+                string infoBox;
                 if (CurrentInfo < info)
                 {
                     infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Result", $"Bot downgraded from {info} to {CurrentInfo}");
@@ -180,8 +208,7 @@ namespace ConsoleDiscordBot
                     })
                     );
 
-
-                File.Delete($"{exeFolderPath}/updateBotInfo.json");
+                File.Delete($"{Program.ExeFolderPath}/updateBotInfo.json");
             }
         }
     }
