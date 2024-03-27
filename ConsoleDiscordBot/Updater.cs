@@ -11,7 +11,7 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 2,
-            VersionHotfix = 6
+            VersionHotfix = 7
         };
 
         class UpdateBotInfo
@@ -146,7 +146,7 @@ namespace ConsoleDiscordBot
         }
 
         [SlashCommand("Sleep", "Let's the Bot sleep for x minutes. During this time you can use the local Version of the Bot.")]
-        public static async Task Sleep(InteractionContext ctx, [Option("Minutes", "How long the Bot should sleep.")] int minutes)
+        public static async Task Sleep(InteractionContext ctx, [Option("Minutes", "How long the Bot should sleep.")] double minutes)
         {
             await ctx.DeferAsync();
 
@@ -168,11 +168,11 @@ namespace ConsoleDiscordBot
         {
             if (File.Exists($"{Program.ExeFolderPath}/sleeper.txt"))
             {
-                int minutes = JsonConvert.DeserializeObject<int>(File.ReadAllText($"{Program.ExeFolderPath}/sleeper.txt"));
+                double minutes = JsonConvert.DeserializeObject<double>(File.ReadAllText($"{Program.ExeFolderPath}/sleeper.txt"));
 
                 Console.WriteLine($"Bot is sleeping for {minutes} minutes.");
 
-                await Task.Delay(minutes * 60000);
+                await Task.Delay((int)(minutes * 60000));
 
                 File.Delete($"{Program.ExeFolderPath}/sleeper.txt");
             }
@@ -189,11 +189,11 @@ namespace ConsoleDiscordBot
                 string infoBox;
                 if (CurrentInfo < info)
                 {
-                    infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Result", $"Bot downgraded from {info} to {CurrentInfo}");
+                    infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Result", $"Bot rolled back from {info} to {CurrentInfo}");
                 }
                 else if (CurrentInfo > info)
                 {
-                    infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Result", $"Bot upgraded from {info} to {CurrentInfo}");
+                    infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Result", $"Bot updated from {info} to {CurrentInfo}");
                 }
                 else
                 {
