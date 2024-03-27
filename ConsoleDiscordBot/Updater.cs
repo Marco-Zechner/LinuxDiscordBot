@@ -1,7 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Newtonsoft.Json;
-using System.Reflection;
 
 namespace ConsoleDiscordBot
 {
@@ -12,7 +11,7 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 2,
-            VersionHotfix = 5
+            VersionHotfix = 6
         };
 
         class UpdateBotInfo
