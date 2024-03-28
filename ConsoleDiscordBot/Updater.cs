@@ -11,10 +11,13 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 1,
+            VersionHotfix = 2,
             Changes = @"
-- Fixed Formatting for InvalidCommand Message
-- Fixed Bug in BoxItCommand"
+- BoxIt Command: Split Error Message for Content and Header Length
+- ListDevConsols: Added new Command to display active DevConsoles
+- DevConsole: Made usage visible to everyone
+- DevConsoles should now be remembered after restart
+"
         };
 
         class UpdateBotInfo
@@ -212,6 +215,18 @@ namespace ConsoleDiscordBot
                     );
 
                 File.Delete($"{Program.ExeFolderPath}/updateBotInfo.json");
+            }
+
+            if (File.Exists($"{Program.ExeFolderPath}/consoleChannels.json"))
+            {
+                HashSet<DiscordChannel> channels = [];
+
+                foreach (ulong id in JsonConvert.DeserializeObject<ulong[]>(File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json")))
+                {
+                    channels.Add(await Bot.Client.GetChannelAsync(id));
+                }
+
+                DevConsoleCommands.ConsoleChannels = channels;
             }
         }
     }

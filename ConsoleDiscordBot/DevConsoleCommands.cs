@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using Newtonsoft.Json;
 using System.Reflection.PortableExecutable;
 
 namespace ConsoleDiscordBot
@@ -16,7 +17,7 @@ namespace ConsoleDiscordBot
             [Option("consoleChannel", "The Channel where to bot should seed console stuff")] DiscordChannel consoleChannel 
             )
         {
-            await ctx.DeferAsync(true);
+            await ctx.DeferAsync();
 
             if (consoleChannel == null)
             {
@@ -40,6 +41,31 @@ namespace ConsoleDiscordBot
                 ConsoleChannels.Remove(consoleChannel);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Removed {consoleChannel.Name} from the Console Channels"));
             }
+
+            File.WriteAllText($"{Program.ExeFolderPath}/consoleChannels.json", JsonConvert.SerializeObject(ConsoleChannels.Select(c => c.Id).ToArray()));
+        }
+
+        public static async Task ListDevConsols(InteractionContext ctx,
+            [Option("showOtherServers", "Show the Console Channels of other Servers")] bool showOtherServers = false
+            )
+        {
+            await ctx.DeferAsync();
+
+            if (ConsoleChannels.Count == 0)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("No Console Channels set"));
+                return;
+            }
+
+            string message = "Console Channels:\n";
+            foreach (var channel in ConsoleChannels)
+            {
+                if (!showOtherServers && channel.GuildId != ctx.Guild.Id)
+                    continue;
+                message += $"- {channel.Name} : {channel.Guild.Name}\n";
+            }
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(message));
         }
 
         public static async Task SetupDevConsole()

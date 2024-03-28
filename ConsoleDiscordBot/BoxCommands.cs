@@ -27,16 +27,26 @@ namespace ConsoleDiscordBot
         {
             await ctx.DeferAsync();
 
-            if (header.Length > 200 || content.Length > 800)
+            if (header.Length > 200)
             {
                 DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
                 {
-                    ("header.Length", header.Length.ToString(), "200"),
-                    ("content.Length", content.Length.ToString(), "800")
-                }, "header or content was too long.");
+                    ("header.Length", header.Length.ToString(), "<=200"),
+                }, "header was too long.");
 
                 header = "Error";
-                content = "Header or Content was too long.";
+                content = "Header was too long.";
+            }
+
+            if (content.Length > 800)
+            {
+                DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
+                {
+                    ("content.Length", content.Length.ToString(), "<=800")
+                }, "content was too long.");
+
+                header = "Error";
+                content = "Content was too long.";
             }
 
             string boxedMessage = CodeBoxDrawer.DrawBoxWithHeader(header, content, (float)headerAlignment, 
