@@ -42,7 +42,7 @@ namespace ConsoleDiscordBot
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Removed {consoleChannel.Name} from the Console Channels"));
             }
 
-            File.WriteAllText($"{Program.ExeFolderPath}/consoleChannels.json", JsonConvert.SerializeObject(ConsoleChannels.Select(c => c.Id).ToArray()));
+            File.WriteAllText($"{Program.ExeFolderPath}/consoleChannels.json", JsonConvert.SerializeObject(ConsoleChannels.ToArray()));
         }
 
         [SlashCommand("ListDevConsols", "List all Console Channels")]
@@ -75,9 +75,13 @@ namespace ConsoleDiscordBot
             {
                 HashSet<DiscordChannel> channels = [];
 
-                foreach (ulong id in JsonConvert.DeserializeObject<ulong[]>(File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json")))
+                try
                 {
-                    channels.Add(await Bot.Client.GetChannelAsync(id));
+                    channels = JsonConvert.DeserializeObject<HashSet<DiscordChannel>>(File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json"));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error reading Console Channels: {ex.Message}");
                 }
 
                 ConsoleChannels = channels;
