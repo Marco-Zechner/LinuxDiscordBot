@@ -45,6 +45,7 @@ namespace ConsoleDiscordBot
             File.WriteAllText($"{Program.ExeFolderPath}/consoleChannels.json", JsonConvert.SerializeObject(ConsoleChannels.Select(c => c.Id).ToArray()));
         }
 
+        [SlashCommand("ListDevConsols", "List all Console Channels")]
         public static async Task ListDevConsols(InteractionContext ctx,
             [Option("showOtherServers", "Show the Console Channels of other Servers")] bool showOtherServers = false
             )
@@ -70,6 +71,18 @@ namespace ConsoleDiscordBot
 
         public static async Task SetupDevConsole()
         {
+            if (File.Exists($"{Program.ExeFolderPath}/consoleChannels.json"))
+            {
+                HashSet<DiscordChannel> channels = [];
+
+                foreach (ulong id in JsonConvert.DeserializeObject<ulong[]>(File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json")))
+                {
+                    channels.Add(await Bot.Client.GetChannelAsync(id));
+                }
+
+                ConsoleChannels = channels;
+            }
+
             writer = new StringWriterExt();
             writer.Flushed += Writer_Flushed;
 

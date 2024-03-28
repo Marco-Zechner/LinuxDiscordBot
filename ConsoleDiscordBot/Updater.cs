@@ -11,7 +11,7 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 2,
+            VersionHotfix = 3,
             Changes = @"
 - BoxIt Command: Split Error Message for Content and Header Length
 - ListDevConsols: Added new Command to display active DevConsoles
