@@ -11,7 +11,7 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 2,
-            VersionHotfix = 7
+            VersionHotfix = 8
         };
 
         class UpdateBotInfo
