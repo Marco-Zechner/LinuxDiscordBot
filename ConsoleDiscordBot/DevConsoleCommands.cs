@@ -7,31 +7,31 @@ namespace ConsoleDiscordBot
     {
         static readonly TextWriter defaultConsole = Console.Out;
         static StringWriterExt writer;
-        public static List<ulong> ActiveDevIDs { get; set; } = [];
+        public static HashSet<DiscordChannel> ConsoleChannels { get; set; } = [];
 
 
         [SlashCommand("DevConsole", "Send the Console output to the User")]
         public static async Task DevConsole(InteractionContext ctx,
-            [Option("active", "If the bot should send the stuff to you")] bool active 
+            [Option("consoleChannel", "The Channel where to bot should seed console stuff")] DiscordChannel consoleChannel 
             )
         {
-            await ctx.DeferAsync();
+            await ctx.DeferAsync(true);
 
-            if (active)
+            if (consoleChannel == null)
             {
-                await ctx.CreateResponseAsync(DSharpPlus.InteractionResponseType.ChannelMessageWithSource, new DSharpPlus.Entities.DiscordInteractionResponseBuilder()
-                    .WithContent("I will send you the Console output")
-                    .AsEphemeral(true)
-                    );
-                ActiveDevIDs.Add(ctx.User.Id);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("No Channel provided"));
+                return;
+            }
+
+            if (!ConsoleChannels.Contains(consoleChannel))
+            {
+                ConsoleChannels.Add(consoleChannel);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Added {consoleChannel.Name} to the Console Channels"));
             }
             else
             {
-                await ctx.CreateResponseAsync(DSharpPlus.InteractionResponseType.ChannelMessageWithSource, new DSharpPlus.Entities.DiscordInteractionResponseBuilder()
-                    .WithContent("I will stop sending you the Console output")
-                    .AsEphemeral(true)
-                    );
-                ActiveDevIDs.Remove(ctx.User.Id);
+                ConsoleChannels.Remove(consoleChannel);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Removed {consoleChannel.Name} from the Console Channels"));
             }
         }
 
@@ -66,16 +66,37 @@ namespace ConsoleDiscordBot
 
         private static async Task OnConsoleWrite(string message)
         {
-            //pm users in ActiveDevIDs
-            //foreach (var id in ActiveDevIDs)
-            //{
-            //    var user = await Bot.Client.GetUserAsync(id);
+            message = message.TrimEnd('\n').Trim();
 
-            //    DiscordMember member = (DiscordMember)user;
-            //    var channel = await member.CreateDmChannelAsync();
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
 
-            //    await channel.SendMessageAsync(message);
-            //}
+            if (ConsoleChannels.Count == 0)
+            {
+                Console.WriteLine("\nNo Console Channels set");
+                return;
+            }
+
+            foreach (var channel in ConsoleChannels)
+            {
+                string prefix = $"{DateTime.Now:[HH:mm:ss]}  ";
+
+                //var previousMessage = channel.GetMessagesAsync(1);
+
+                if (message.Length < 1900)
+                    await channel.SendMessageAsync($"```\n{prefix}{message}```");
+                else
+                {
+                    int i = 0;
+                    while (i < message.Length)
+                    {
+                        await channel.SendMessageAsync($"```\n{prefix}{message.Substring(i, Math.Min(1900, message.Length - i))}```");
+                        i += 1900;
+                    }
+                }
+            }
         }
     }
 

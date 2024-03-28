@@ -20,6 +20,7 @@ namespace ConsoleDiscordBot
             public int VersionMajor { get; set; }
             public int VersionMinor { get; set; }
             public int VersionHotfix { get; set; }
+            public int SleepTime { get; set; }
 
             public string Version => $"{VersionMajor}.{VersionMinor}.{VersionHotfix}";
             
@@ -110,15 +111,24 @@ namespace ConsoleDiscordBot
         }
 
         [SlashCommand("BeamMeUpScotty", "Tries to update the Bot")]
-        public static async Task UpdateBot(InteractionContext ctx)
+        public static async Task UpdateBot(InteractionContext ctx,
+            [Option("Minutes", "How long the Bot should sleep.")] double minutes = 0)
         {
             await ctx.DeferAsync();
 
             CurrentInfo.ChannelID = ctx.Channel.Id;
+            CurrentInfo.SleepTime = (int)minutes;
 
             File.WriteAllText($"{Program.ExeFolderPath}/updateBotInfo.json", JsonConvert.SerializeObject(CurrentInfo));
 
-            string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"{CurrentInfo}", $"Bot will now restart and attempt to update.\nThis will take around 1 minute.");
+            string infoText = $"Bot will now restart and attempt to update.\nThis will take around 30 seconds.";
+
+            if (minutes > 0)
+            {
+                infoText += $"\nBot will sleep for {minutes} minutes after the update.";
+            }
+
+            string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"{CurrentInfo}", infoText);
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
@@ -134,6 +144,7 @@ namespace ConsoleDiscordBot
         public static async Task VersionInfo(InteractionContext ctx)
         {
             await ctx.DeferAsync();
+            Console.WriteLine("Printed VersionInfo");
 
             string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Bot", $"Current Version: {CurrentInfo}");
 
@@ -145,36 +156,20 @@ namespace ConsoleDiscordBot
                 );
         }
 
-        [SlashCommand("Sleep", "Let's the Bot sleep for x minutes. During this time you can use the local Version of the Bot.")]
-        public static async Task Sleep(InteractionContext ctx, [Option("Minutes", "How long the Bot should sleep.")] double minutes)
-        {
-            await ctx.DeferAsync();
-
-            File.WriteAllText($"{Program.ExeFolderPath}/sleeper.txt", JsonConvert.SerializeObject(minutes));
-
-            string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Sleep", $"Bot will now sleep for {minutes} minutes.");
-
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .AddEmbed(new DiscordEmbedBuilder()
-                {
-                    Description = $"```{infoBox}```"
-                })
-                );
-
-            Environment.Exit(1);
-        }
-
         public static async Task CheckForSleeping()
         {
-            if (File.Exists($"{Program.ExeFolderPath}/sleeper.txt"))
+            if (File.Exists($"{Program.ExeFolderPath}/updateBotInfo.json"))
             {
-                double minutes = JsonConvert.DeserializeObject<double>(File.ReadAllText($"{Program.ExeFolderPath}/sleeper.txt"));
+                UpdateBotInfo info = JsonConvert.DeserializeObject<UpdateBotInfo>(File.ReadAllText($"{Program.ExeFolderPath}/updateBotInfo.json"));
 
-                Console.WriteLine($"Bot is sleeping for {minutes} minutes.");
+                if (info.SleepTime <= 0)
+                {
+                    return;
+                }
 
-                await Task.Delay((int)(minutes * 60000));
+                Console.WriteLine($"Bot is sleeping for {info.SleepTime} minutes.");
 
-                File.Delete($"{Program.ExeFolderPath}/sleeper.txt");
+                await Task.Delay((int)(info.SleepTime * 60000));
             }
         }
 
