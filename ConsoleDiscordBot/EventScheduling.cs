@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using System.Globalization;
+using System.Reflection.PortableExecutable;
 
 namespace ConsoleDiscordBot
 {
@@ -37,15 +38,39 @@ namespace ConsoleDiscordBot
             catch (Exception ex)
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .WithContent($"Invalid Time \"{suggestedTime}\" or Date \"{date}\". (date is optional)\n```{ex.Message}```")
+                .WithContent($"Invalid Time \"{suggestedTime}\" or Date \"{date}\". (date is optional)")
                 );
+
+                DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
+                {
+                    ("topic", topic, "string"),
+                    ("suggestedTime", suggestedTime, "HH:mm"),
+                    ("date", date, "dd.MM.yyyy"),
+                    ("role", role?.Name ?? "null", "DiscordRole"),
+                    ("background", background?.FileName ?? "null", "DiscordAttachment"),
+                    ("topicURL", topicURL ?? "null", "string"),
+                    ("maxTimeShiftHours", maxTimeShiftHours.ToString(), "long"),
+                }, $"Invalid Time \"{suggestedTime}\" or Date \"{date}\"", ex);
                 return;
             }
 
             if (maxTimeShiftHours < 2) maxTimeShiftHours = 2;
 
             var validImages = await EmbedImageValidation.Validate(ctx, background);
-            if (validImages == false) return;
+            if (validImages == false)
+            {
+                DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
+                {
+                    ("topic", topic, "string"),
+                    ("suggestedTime", suggestedTime, "HH:mm"),
+                    ("date", date, "dd.MM.yyyy"),
+                    ("role", role?.Name ?? "null", "DiscordRole"),
+                    ("background", background?.FileName ?? "null", "DiscordAttachment"),
+                    ("topicURL", topicURL ?? "null", "string"),
+                    ("maxTimeShiftHours", maxTimeShiftHours.ToString(), "long"),
+                }, "Invalid Image");
+                return;
+            }
 
             Console.WriteLine("Attributes are valid");
 
@@ -98,6 +123,8 @@ namespace ConsoleDiscordBot
                 .WithContent("The Poll has expired or is not valid anymore")
                 .AsEphemeral(true)
                 );
+
+                DevConsoleCommands.InteractionFailed(interaction, "poll was null");
                 return;
             }
 
@@ -107,6 +134,8 @@ namespace ConsoleDiscordBot
                 .WithContent("You are an invalid User. Please contact the Bot owner")
                 .AsEphemeral(true)
                 );
+
+                DevConsoleCommands.InteractionFailed(interaction, "User was not a DiscordMember");
                 return;
             }
 
@@ -141,6 +170,8 @@ namespace ConsoleDiscordBot
                         .WithContent($"The selected Date/Time \"{interaction.Data.Values[0]}\" could not be parsed correctly. Contact the Bot owner.")
                         .AsEphemeral(true)
                         );
+
+                        DevConsoleCommands.InteractionFailed(interaction, $"selectedTime could not be parsed: {interaction.Data.Values[0]}");
                         return;
                     }
                     poll.RegisterUser(user, selectedTime);

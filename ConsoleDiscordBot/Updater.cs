@@ -10,8 +10,11 @@ namespace ConsoleDiscordBot
         {
             ChannelID = 0,
             VersionMajor = 1,
-            VersionMinor = 2,
-            VersionHotfix = 8
+            VersionMinor = 3,
+            VersionHotfix = 0,
+            Changes = @"
+- Added Changes to Update Command
+- Added Logging to the Console on use of Commands with invalid Parameters"
         };
 
         class UpdateBotInfo
@@ -21,8 +24,9 @@ namespace ConsoleDiscordBot
             public int VersionMinor { get; set; }
             public int VersionHotfix { get; set; }
             public int SleepTime { get; set; }
+            public string Changes { get; set; }
 
-            public string Version => $"{VersionMajor}.{VersionMinor}.{VersionHotfix}";
+            public string Version => $"{ VersionMajor}.{VersionMinor}.{VersionHotfix}";
             
             public UpdateBotInfo() { }
             
@@ -195,11 +199,16 @@ namespace ConsoleDiscordBot
                     infoBox = CodeBoxDrawer.DrawBoxWithHeader($"Result", $"No other Version found.\nStayed on {CurrentInfo}");
                 }
 
+                await File.WriteAllTextAsync("temp.txt", CurrentInfo.Changes);
+
+                FileStream fileStream = new("temp.txt", FileMode.Open);
+
                 await channel.SendMessageAsync(new DiscordMessageBuilder()
                     .AddEmbed(new DiscordEmbedBuilder()
                     {
                         Description = $"```{infoBox}```"
                     })
+                    .AddFile("changes.txt", fileStream, AddFileOptions.CloseStream)
                     );
 
                 File.Delete($"{Program.ExeFolderPath}/updateBotInfo.json");

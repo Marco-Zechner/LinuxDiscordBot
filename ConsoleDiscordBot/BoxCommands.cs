@@ -25,13 +25,18 @@ namespace ConsoleDiscordBot
             [Option("headerAlignment", "Align the header from the left")] double headerAlignment = 0.5
             )
         {
-
             await ctx.DeferAsync();
 
             if (header.Length > 200 || content.Length > 800)
             {
                 header = "No";
                 content = "Mona, NO!";
+
+                DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
+                {
+                    ("header", header.Length.ToString(), "200"),
+                    ("content", content.Length.ToString(), "800")
+                }, "header or content was too long.");
             }
 
             string boxedMessage = CodeBoxDrawer.DrawBoxWithHeader(header, content, (float)headerAlignment, 

@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using System.Reflection.PortableExecutable;
 
 namespace ConsoleDiscordBot
 {
@@ -20,6 +21,12 @@ namespace ConsoleDiscordBot
             if (consoleChannel == null)
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("No Channel provided"));
+
+                CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
+                {
+                    ("Channel", "null", "channelName"),
+                }, "No Channel provided");
+
                 return;
             }
 
@@ -97,6 +104,38 @@ namespace ConsoleDiscordBot
                     }
                 }
             }
+        }
+
+        public static void CommandFailed(DiscordUser user, string commandName, (string parameterName, string actualValue, string expectedValues)[] parameters, string reason, Exception ex = null)
+        {
+            string message = $"Command {commandName} failed for {user.Username}:{user.Id}\n";
+
+            foreach (var (parameterName, actualValue, expectedValue) in parameters)
+            {
+                message += $"Parameter {parameterName} failed. Expected {expectedValue} but got {actualValue}\n";
+            }
+
+            message += $"Reason:\n{reason}";
+
+            if (ex != null)
+            {
+                message += $"\nException:\n{ex.Message}\n{ex.StackTrace}";
+            }
+
+            Console.WriteLine(message);
+        }
+
+        public static void InteractionFailed(DiscordInteraction interaction, string reason, Exception ex = null)
+        {
+            string message = $"Interaction in {interaction.Channel.Name} from {interaction.CreationTimestamp} failed for {interaction.User.Username}:{interaction.User.Id}\n";
+            message += $"Reason:\n{reason}";
+
+            if (ex != null)
+            {
+                message += $"\nException:\n{ex.Message}\n{ex.StackTrace}";
+            }
+
+            Console.WriteLine(message);
         }
     }
 
