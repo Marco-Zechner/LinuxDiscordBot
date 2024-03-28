@@ -106,13 +106,13 @@ namespace ConsoleDiscordBot
             }
         }
 
-        public static void CommandFailed(DiscordUser user, string commandName, (string parameterName, string actualValue, string expectedValues)[] parameters, string reason, Exception ex = null)
+        public static void CommandFailed(DiscordUser user, string commandName, (string parameterName, string value, string limits)[] parameters, string reason, Exception ex = null)
         {
             string message = $"Command {commandName} failed for {user.Username}:{user.Id}\n";
 
-            foreach (var (parameterName, actualValue, expectedValue) in parameters)
+            foreach (var (parameterName, value, limits) in parameters)
             {
-                message += $"Parameter {parameterName} failed. Expected {expectedValue} but got {actualValue}\n";
+                message += $"Parameter {parameterName} failed. [{value}] : AllowedValues/Limits [{limits}]\n";
             }
 
             message += $"Reason:\n{reason}";

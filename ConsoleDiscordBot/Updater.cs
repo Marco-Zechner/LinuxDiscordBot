@@ -11,10 +11,10 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 0,
+            VersionHotfix = 1,
             Changes = @"
-- Added Changes to Update Command
-- Added Logging to the Console on use of Commands with invalid Parameters"
+- Fixed Formatting for InvalidCommand Message
+- Fixed Bug in BoxItCommand"
         };
 
         class UpdateBotInfo

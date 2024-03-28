@@ -29,14 +29,14 @@ namespace ConsoleDiscordBot
 
             if (header.Length > 200 || content.Length > 800)
             {
-                header = "No";
-                content = "Mona, NO!";
-
                 DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
                 {
-                    ("header", header.Length.ToString(), "200"),
-                    ("content", content.Length.ToString(), "800")
+                    ("header.Length", header.Length.ToString(), "200"),
+                    ("content.Length", content.Length.ToString(), "800")
                 }, "header or content was too long.");
+
+                header = "Error";
+                content = "Header or Content was too long.";
             }
 
             string boxedMessage = CodeBoxDrawer.DrawBoxWithHeader(header, content, (float)headerAlignment, 
