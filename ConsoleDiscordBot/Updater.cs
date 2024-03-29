@@ -11,9 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 5,
+            VersionHotfix = 6,
             Changes = @"
-- combined log messages that happen within 2seconds
+- fixed logging not working
 "
         };
 

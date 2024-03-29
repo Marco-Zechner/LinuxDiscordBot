@@ -90,12 +90,14 @@ namespace ConsoleDiscordBot
 
             try
             {
+                Console.WriteLine("Switching to Custome Console");
                 Console.SetOut(writer);
                 await Program.DevConsoleRunning();
             }
             finally
             {
                 Console.SetOut(defaultConsole);
+                Console.WriteLine("Switched to default Console");
             }
         }
 
@@ -104,22 +106,26 @@ namespace ConsoleDiscordBot
             if (sender is StringWriterExt sw)
             {
                 Console.SetOut(defaultConsole);
+                Console.WriteLine("Switched to default Console");
+
                 string message = sw.ToString();
                 string prefix = $"{DateTime.Now:[HH:mm:ss:fff]}  ";
 
                 if (string.IsNullOrEmpty(message.Trim()))
                 {
-                    Console.WriteLine($"{prefix}  Empty Message");
-                    return;
+                    Console.WriteLine($"{prefix}Empty Message");
+                }
+                else
+                {
+                    message = prefix + message.Replace("\n", $"\n{prefix}") + "\n";
+
+                    Console.Write(message);
+                    AddConsoleMessage(message);
                 }
 
-
-                message = prefix + message.Replace("\n", $"\n{prefix}") + "\n";
-
-                Console.Write(message);
-                AddConsoleMessage(message);
-
                 sw.GetStringBuilder().Clear(); // Clear the buffer after writing to console
+
+                Console.WriteLine("Switching to Custome Console");
                 Console.SetOut(writer);
             }
         }
@@ -144,6 +150,30 @@ namespace ConsoleDiscordBot
 
         private static async Task WriteToConsole()
         {
+            if (File.Exists($"{Program.ExeFolderPath}/consoleChannels.json"))
+            {
+                HashSet<DiscordChannel> channels = [];
+
+                string content = File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json");
+                try
+                {
+                    ulong[] ids = [];
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        ids = JsonConvert.DeserializeObject<ulong[]>(content);
+                    }
+                    foreach (ulong id in ids)
+                    {
+                        channels.Add(await Bot.Client.GetChannelAsync(id));
+                    }
+                }
+                catch { }
+                finally
+                {
+                    ConsoleChannels = channels;
+                }
+            }
+
             if (ConsoleChannels.Count == 0)
             {
                 Console.WriteLine("No Console Channels set. Storing Message for later.");
