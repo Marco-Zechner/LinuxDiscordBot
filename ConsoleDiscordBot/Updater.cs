@@ -11,9 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 4,
+            VersionHotfix = 5,
             Changes = @"
-- changed serialization of the DiscordChannels for the DevConsole
+- combined log messages that happen within 2seconds
 "
         };
 
@@ -181,7 +181,8 @@ namespace ConsoleDiscordBot
         {
             if (File.Exists($"{Program.ExeFolderPath}/updateBotInfo.json"))
             {
-                UpdateBotInfo info = JsonConvert.DeserializeObject<UpdateBotInfo>(File.ReadAllText($"{Program.ExeFolderPath}/updateBotInfo.json"));
+                string content = File.ReadAllText($"{Program.ExeFolderPath}/updateBotInfo.json");
+                UpdateBotInfo info = JsonConvert.DeserializeObject<UpdateBotInfo>(content);
 
                 DiscordChannel channel = await Bot.Client.GetChannelAsync(info.ChannelID);
 
@@ -218,12 +219,24 @@ namespace ConsoleDiscordBot
             {
                 HashSet<DiscordChannel> channels = [];
 
-                foreach (ulong id in JsonConvert.DeserializeObject<ulong[]>(File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json")))
+                string content = File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json");
+                try
                 {
-                    channels.Add(await Bot.Client.GetChannelAsync(id));
+                    ulong[] ids = [];
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        ids = JsonConvert.DeserializeObject<ulong[]>(content);
+                    }
+                    foreach (ulong id in ids)
+                    {
+                        channels.Add(await Bot.Client.GetChannelAsync(id));
+                    }
                 }
-
-                DevConsoleCommands.ConsoleChannels = channels;
+                catch { }
+                finally
+                {
+                    DevConsoleCommands.ConsoleChannels = channels;
+                }
             }
         }
     }

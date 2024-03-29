@@ -1,7 +1,8 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Newtonsoft.Json;
-using System.Reflection.PortableExecutable;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace ConsoleDiscordBot
 {
@@ -10,6 +11,9 @@ namespace ConsoleDiscordBot
         static readonly TextWriter defaultConsole = Console.Out;
         static StringWriterExt writer;
         public static HashSet<DiscordChannel> ConsoleChannels { get; set; } = [];
+
+        private static Timer timer;
+        private static readonly object lockObject = new object();
 
 
         [SlashCommand("DevConsole", "Send the Console output to the User")]
@@ -23,7 +27,7 @@ namespace ConsoleDiscordBot
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("No Channel provided"));
 
-                CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
+                CommandFailed(ctx.User, "DevConsole", new (string, string, string)[]
                 {
                     ("Channel", "null", "channelName"),
                 }, "No Channel provided");
@@ -35,6 +39,11 @@ namespace ConsoleDiscordBot
             {
                 ConsoleChannels.Add(consoleChannel);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Added {consoleChannel.Name} to the Console Channels"));
+                
+                if (!string.IsNullOrEmpty(combinedMessage))
+                {
+                    await Task.Run(WriteToConsole);
+                }
             }
             else
             {
@@ -42,7 +51,7 @@ namespace ConsoleDiscordBot
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Removed {consoleChannel.Name} from the Console Channels"));
             }
 
-            File.WriteAllText($"{Program.ExeFolderPath}/consoleChannels.json", JsonConvert.SerializeObject(ConsoleChannels.ToArray()));
+            File.WriteAllText($"{Program.ExeFolderPath}/consoleChannels.json", JsonConvert.SerializeObject(ConsoleChannels.Select(c => c.Id).ToArray()));
         }
 
         [SlashCommand("ListDevConsols", "List all Console Channels")]
@@ -71,24 +80,13 @@ namespace ConsoleDiscordBot
 
         public static async Task SetupDevConsole()
         {
-            if (File.Exists($"{Program.ExeFolderPath}/consoleChannels.json"))
-            {
-                HashSet<DiscordChannel> channels = [];
-
-                try
-                {
-                    channels = JsonConvert.DeserializeObject<HashSet<DiscordChannel>>(File.ReadAllText($"{Program.ExeFolderPath}/consoleChannels.json"));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error reading Console Channels: {ex.Message}");
-                }
-
-                ConsoleChannels = channels;
-            }
-
             writer = new StringWriterExt();
             writer.Flushed += Writer_Flushed;
+            timer = new Timer(2000)
+            {
+                AutoReset = false
+            };
+            timer.Elapsed += Timer_Elapsed;
 
             try
             {
@@ -107,43 +105,73 @@ namespace ConsoleDiscordBot
             {
                 Console.SetOut(defaultConsole);
                 string message = sw.ToString();
+                string prefix = $"{DateTime.Now:[HH:mm:ss:fff]}  ";
+
+                if (string.IsNullOrEmpty(message.Trim()))
+                {
+                    Console.WriteLine($"{prefix}  Empty Message");
+                    return;
+                }
+
+
+                message = prefix + message.Replace("\n", $"\n{prefix}") + "\n";
+
                 Console.Write(message);
-                OnConsoleWrite(message);
+                AddConsoleMessage(message);
+
                 sw.GetStringBuilder().Clear(); // Clear the buffer after writing to console
                 Console.SetOut(writer);
             }
         }
 
-        private static async Task OnConsoleWrite(string message)
-        {
-            message = message.TrimEnd('\n').Trim();
+        private static string combinedMessage = "";
+        private const int maxMessageLength = 1900;
 
-            if (string.IsNullOrEmpty(message))
+        private static void AddConsoleMessage(string message)
+        {
+            lock (lockObject)
             {
+                combinedMessage += message;
+                timer.Stop();
+                timer.Start();
+            }
+        }
+
+        private static void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Task.Run(WriteToConsole);
+        }
+
+        private static async Task WriteToConsole()
+        {
+            if (ConsoleChannels.Count == 0)
+            {
+                Console.WriteLine("No Console Channels set. Storing Message for later.");
                 return;
             }
 
-            if (ConsoleChannels.Count == 0)
+            string message;
+
+            lock (lockObject)
             {
-                Console.WriteLine("\nNo Console Channels set");
-                return;
+                message = combinedMessage;
+                combinedMessage = "";
             }
 
             foreach (var channel in ConsoleChannels)
             {
-                string prefix = $"{DateTime.Now:[HH:mm:ss]}  ";
-
-                //var previousMessage = channel.GetMessagesAsync(1);
-
-                if (message.Length < 1900)
-                    await channel.SendMessageAsync($"```\n{prefix}{message}```");
+                if (message.Length < maxMessageLength)
+                    await channel.SendMessageAsync($"```{message}```");
                 else
                 {
                     int i = 0;
                     while (i < message.Length)
                     {
-                        await channel.SendMessageAsync($"```\n{prefix}{message.Substring(i, Math.Min(1900, message.Length - i))}```");
-                        i += 1900;
+                        await channel.SendMessageAsync($"```{message.Substring(i, Math.Min(maxMessageLength, message.Length - i))}```");
+                        i += maxMessageLength;
+
+                        //delay 5s
+                        await Task.Delay(5000);
                     }
                 }
             }
@@ -155,7 +183,7 @@ namespace ConsoleDiscordBot
 
             foreach (var (parameterName, value, limits) in parameters)
             {
-                message += $"Parameter {parameterName} failed. [{value}] : AllowedValues/Limits [{limits}]\n";
+                message += $"Parameter {parameterName} Value:  [{value}], AllowedValues/Limits [{limits}]\n";
             }
 
             message += $"Reason:\n{reason}";

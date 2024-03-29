@@ -41,7 +41,7 @@ namespace ConsoleDiscordBot
                 .WithContent($"Invalid Time \"{suggestedTime}\" or Date \"{date}\". (date is optional)")
                 );
 
-                DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
+                DevConsoleCommands.CommandFailed(ctx.User, "ScheduleEvent", new (string, string, string)[]
                 {
                     ("topic", topic, "string"),
                     ("suggestedTime", suggestedTime, "HH:mm"),
