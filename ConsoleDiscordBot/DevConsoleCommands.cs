@@ -78,6 +78,30 @@ namespace ConsoleDiscordBot
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(message));
         }
 
+        [SlashCommand("WriteToConsole", "Write a Message to the Console")]
+        public static async Task WriteToConsole(InteractionContext ctx,
+            [Option("message", "The Message to write to the Console")] string message
+            )
+        {
+            await ctx.DeferAsync();
+
+            if (string.IsNullOrEmpty(message))
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("No Message provided"));
+
+                CommandFailed(ctx.User, "WriteToConsole", new (string, string, string)[]
+                {
+                    ("Message", "null", "message"),
+                }, "No Message provided");
+
+                return;
+            }
+
+            Console.WriteLine(message);
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Message written to Console"));
+        }
+
         public static async Task SetupDevConsole()
         {
             writer = new StringWriterExt();

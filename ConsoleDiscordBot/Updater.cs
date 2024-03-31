@@ -11,7 +11,7 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 6,
+            VersionHotfix = 7,
             Changes = @"
 - fixed logging not working
 "
