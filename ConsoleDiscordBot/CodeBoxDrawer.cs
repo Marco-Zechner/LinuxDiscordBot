@@ -38,7 +38,7 @@
 
             box += boxChars[5] + new string(boxChars[1], boxWidthWithoutBorder) + boxChars[4] + "\n";
 
-            return box + new string(' ', boxWidthWithoutBorder + 4);
+            return box + new string(' ', boxWidthWithoutBorder + 5);
         }
 
         public static string ConnectBoxes(string box1, string box2, float alignmentPercentLeft = 0.5f)

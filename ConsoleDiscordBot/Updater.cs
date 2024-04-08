@@ -13,9 +13,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 2,
+            VersionHotfix = 3,
             Changes = @"
-- tried fixing to long box content
+- fixed singe box new line bug, maybe...
 "
         };
 
