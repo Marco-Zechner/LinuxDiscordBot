@@ -1,8 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Newtonsoft.Json;
-using System.IO;
-using System.Threading.Channels;
 
 namespace ConsoleDiscordBot
 {
@@ -13,10 +11,10 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 6,
+            VersionHotfix = 7,
             Changes = @"
-header limit = 100
-content limit = 800, 100 per line (automatic)
+header limit = 200
+content limit = 800, 200 per line (automatic)
 "
         };
 
