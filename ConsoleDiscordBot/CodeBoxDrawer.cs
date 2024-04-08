@@ -131,7 +131,7 @@
 
             string connected = ConnectBoxes(headerBox, contentBox, alignmentPercentLeft);
 
-            return connected + new string('-', connected.Split('\n')[0].Length + 5);
+            return connected + new string(' ', connected.Split('\n')[0].Length + 5);
         }
 
         public static string PadContentLeft(string content)

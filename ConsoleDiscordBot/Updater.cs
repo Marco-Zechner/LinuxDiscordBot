@@ -12,10 +12,11 @@ namespace ConsoleDiscordBot
         {
             ChannelID = 0,
             VersionMajor = 1,
-            VersionMinor = 3,
-            VersionHotfix = 17,
+            VersionMinor = 4,
+            VersionHotfix = 0,
             Changes = @"
-- added auto switch for embed to 2. codeblock in update
+- made line invisible again.
+- boxIt should be working again
 "
         };
 
