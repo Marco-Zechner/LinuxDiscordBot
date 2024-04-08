@@ -1,6 +1,8 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Newtonsoft.Json;
+using System.IO;
+using System.Threading.Channels;
 
 namespace ConsoleDiscordBot
 {
@@ -11,9 +13,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 16,
+            VersionHotfix = 17,
             Changes = @"
-- lowered char limit for embed from 60 to 50
+- added auto switch for embed to 2. codeblock in update
 "
         };
 
@@ -134,12 +136,21 @@ namespace ConsoleDiscordBot
 
             string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"{CurrentInfo}", infoText);
 
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .AddEmbed(new DiscordEmbedBuilder()
-                {
-                    Description = $"```{infoBox}```"
-                })
+            if (infoBox.Split('\n')[0].Length > 50)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .WithContent($"```{infoBox}```")
                 );
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .AddEmbed(new DiscordEmbedBuilder()
+                    {
+                        Description = $"```{infoBox}```"
+                    })
+                ); 
+            }
             
             Environment.Exit(1);
         }
