@@ -76,9 +76,12 @@ namespace ConsoleDiscordBot
             }
 
             if (ctx.User.Username == "Mona")
+            {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder()
                     .WithContent($"No, I don't like you. You are mean. ~.~")
                 );
+                return;
+            }
 
             if (boxedMessage.Split('\n')[0].Length > 40)
             {

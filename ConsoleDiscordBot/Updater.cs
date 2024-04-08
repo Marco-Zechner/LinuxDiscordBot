@@ -11,9 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 8,
+            VersionHotfix = 9,
             Changes = @"
-Mona proofed
+Mona proofed 2
 "
         };
 
