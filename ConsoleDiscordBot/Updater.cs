@@ -13,7 +13,7 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 4,
+            VersionHotfix = 5,
             Changes = @"
 reduced max length for embed to 40
 made the bottom line of invisible ascii characters.
