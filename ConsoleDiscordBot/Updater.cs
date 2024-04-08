@@ -11,10 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 8,
+            VersionHotfix = 9,
             Changes = @"
-- added a dot in pos 0,0 of the box so mobile view draws the first spaces.
-- made it possible to draw only one box (box without header)
+- trying to fix new line bug by adding space infront of new line
 "
         };
 

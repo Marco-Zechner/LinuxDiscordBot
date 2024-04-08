@@ -19,24 +19,24 @@
             int widthPadding = 1 + padding * 2;
             int boxWidthWithoutBorder = boxSizedContent.Split('\n')[0].Length + widthPadding * 2;
 
-            string box = boxChars[0] + new string(boxChars[1], boxWidthWithoutBorder) + boxChars[2] + "\n";
+            string box = boxChars[0] + new string(boxChars[1], boxWidthWithoutBorder) + boxChars[2] + " \n";
 
             for (int i = 0; i < padding; i++)
             {
-                box += boxChars[3] + new string(' ', boxWidthWithoutBorder) + boxChars[3] + "\n";
+                box += boxChars[3] + new string(' ', boxWidthWithoutBorder) + boxChars[3] + " \n";
             }
 
             foreach (var line in boxSizedContent.Split('\n'))
             {
-                box += boxChars[3] + new string(' ', widthPadding) + line + new string(' ', widthPadding) + boxChars[3] + "\n";
+                box += boxChars[3] + new string(' ', widthPadding) + line + new string(' ', widthPadding) + boxChars[3] + " \n";
             }
 
             for (int i = 0; i < padding; i++)
             {
-                box += boxChars[3] + new string(' ', boxWidthWithoutBorder) + boxChars[3] + "\n";
+                box += boxChars[3] + new string(' ', boxWidthWithoutBorder) + boxChars[3] + " \n";
             }
 
-            box += boxChars[5] + new string(boxChars[1], boxWidthWithoutBorder) + boxChars[4] + "\n";
+            box += boxChars[5] + new string(boxChars[1], boxWidthWithoutBorder) + boxChars[4] + " \n";
 
             return box;
         }
