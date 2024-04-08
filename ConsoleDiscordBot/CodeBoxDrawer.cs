@@ -37,9 +37,8 @@
             }
 
             box += boxChars[5] + new string(boxChars[1], boxWidthWithoutBorder) + boxChars[4] + "\n";
-            box += new string(' ', boxWidthWithoutBorder + 4);
 
-            return box;
+            return box + new string(' ', boxWidthWithoutBorder + 4);
         }
 
         public static string ConnectBoxes(string box1, string box2, float alignmentPercentLeft = 0.5f)
@@ -130,7 +129,9 @@
             string headerBox = DrawBox(header, headerPadding, thickHeader);
             string contentBox = DrawBox(content, contentPadding, thickContent);
 
-            return ConnectBoxes(headerBox, contentBox, alignmentPercentLeft);
+            string connected = ConnectBoxes(headerBox, contentBox, alignmentPercentLeft);
+
+            return connected + new string(' ', connected.Split('\n')[0].Length + 4);
         }
 
         public static string PadContentLeft(string content)

@@ -11,8 +11,10 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 12,
+            VersionHotfix = 13,
             Changes = @"
+- added line fix to connected Boxes
+- made line into spaces again
 "
         };
 
