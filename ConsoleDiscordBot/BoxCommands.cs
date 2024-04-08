@@ -75,7 +75,7 @@ namespace ConsoleDiscordBot
                     thick: boxFormating == BoxFormating.allThick || boxFormating == BoxFormating.thickContent);
             }
 
-            if (boxedMessage.Split('\n')[0].Length > 50)
+            if (boxedMessage.Split('\n')[0].Length > 40)
             {
                 try
                 {

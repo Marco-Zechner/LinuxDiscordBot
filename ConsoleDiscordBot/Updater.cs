@@ -13,9 +13,11 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 3,
+            VersionHotfix = 4,
             Changes = @"
-- fixed singe box new line bug, maybe...
+reduced max length for embed to 40
+made the bottom line of invisible ascii characters.
+made it 3 longer
 "
         };
 
@@ -136,7 +138,7 @@ namespace ConsoleDiscordBot
 
             string infoBox = CodeBoxDrawer.DrawBoxWithHeader($"{CurrentInfo}", infoText);
 
-            if (infoBox.Split('\n')[0].Length > 50)
+            if (infoBox.Split('\n')[0].Length > 40)
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder()
                     .WithContent($"```{infoBox}```")
@@ -215,7 +217,7 @@ namespace ConsoleDiscordBot
 
                 FileStream fileStream = new("temp.txt", FileMode.Open);
 
-                if (infoBox.Split('\n')[0].Length > 50)
+                if (infoBox.Split('\n')[0].Length > 40)
                 {
                     await channel.SendMessageAsync(new DiscordMessageBuilder()
                     .WithContent($"```{infoBox}```")
