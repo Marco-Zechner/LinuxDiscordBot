@@ -37,7 +37,7 @@
             }
 
             box += boxChars[5] + new string(boxChars[1], boxWidthWithoutBorder) + boxChars[4] + "\n";
-            box += new string('_', boxWidthWithoutBorder + 4);
+            box += new string(' ', boxWidthWithoutBorder + 4);
 
             return box;
         }

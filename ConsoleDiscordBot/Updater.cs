@@ -11,9 +11,8 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 11,
+            VersionHotfix = 12,
             Changes = @"
-- made line wider
 "
         };
 
