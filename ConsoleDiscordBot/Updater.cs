@@ -13,10 +13,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 0,
+            VersionHotfix = 1,
             Changes = @"
-- made line invisible again.
-- boxIt should be working again
+- made dot invisible
 "
         };
 

@@ -92,7 +92,7 @@
                 bottomBoxChars = thickBox;
             }
 
-            string connectedBoxes = ".";
+            string connectedBoxes = "‎ ";
 
             string[] topLines = topBox.Split('\n');
             for (int i = 0; i < topLines.Length - 3; i++)
