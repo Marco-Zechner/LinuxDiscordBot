@@ -11,10 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 7,
+            VersionHotfix = 8,
             Changes = @"
-header limit = 130
-content limit = 800, 130 per line (automatic)
+Mona proofed
 "
         };
 

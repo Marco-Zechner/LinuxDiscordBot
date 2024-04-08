@@ -75,6 +75,11 @@ namespace ConsoleDiscordBot
                     thick: boxFormating == BoxFormating.allThick || boxFormating == BoxFormating.thickContent);
             }
 
+            if (ctx.User.Username == "Mona")
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .WithContent($"No, I don't like you. You are mean. ~.~")
+                );
+
             if (boxedMessage.Split('\n')[0].Length > 40)
             {
                 try
