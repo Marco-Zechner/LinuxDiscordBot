@@ -11,10 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 10,
+            VersionHotfix = 11,
             Changes = @"
-- removed space
-- added space line on last line
+- made line wider
 "
         };
 
