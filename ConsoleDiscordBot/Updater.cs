@@ -11,9 +11,10 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 9,
+            VersionHotfix = 10,
             Changes = @"
-- trying to fix new line bug by adding space infront of new line
+- removed space
+- added space line on last line
 "
         };
 
