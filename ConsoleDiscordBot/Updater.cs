@@ -11,9 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 14,
+            VersionHotfix = 15,
             Changes = @"
-- added switch from embed to message if codeblock is to wide (for updater)
+- made bottom line even wider
 "
         };
 
