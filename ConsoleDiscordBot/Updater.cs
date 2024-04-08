@@ -13,9 +13,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 1,
+            VersionHotfix = 2,
             Changes = @"
-- made dot invisible
+- tried fixing to long box content
 "
         };
 

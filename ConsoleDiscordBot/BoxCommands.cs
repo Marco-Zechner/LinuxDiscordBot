@@ -32,7 +32,7 @@ namespace ConsoleDiscordBot
                 DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
                 {
                     ("header.Length", header.Length.ToString(), "<=200"),
-                }, "header was too long.");
+                }, "header was too long. [200 max]");
 
                 header = "Error";
                 content = "Header was too long.";
@@ -46,11 +46,23 @@ namespace ConsoleDiscordBot
                 }, "content was too long.");
 
                 header = "Error";
-                content = "Content was too long.";
+                content = "Content was too long. [800 max, forced 200 per line]";
             }
 
-            string boxedMessage = "";
+            string[] contentLines = content.Split('\n');
+            content = "";
+            foreach (var contentLine in contentLines)
+            {
+                string line = contentLine;
+                while (line.Length > 200)
+                {
+                    content += line[..200] + "\n";
+                    line = line[201..];
+                }
+                content += line + "\n";
+            }
 
+            string boxedMessage;
             if (string.IsNullOrEmpty(header) == false)
             {
                 boxedMessage = CodeBoxDrawer.DrawBoxWithHeader(header, content, (float)headerAlignment,
