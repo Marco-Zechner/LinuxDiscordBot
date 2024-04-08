@@ -11,7 +11,7 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 15,
+            VersionHotfix = 16,
             Changes = @"
 - lowered char limit for embed from 60 to 50
 "
