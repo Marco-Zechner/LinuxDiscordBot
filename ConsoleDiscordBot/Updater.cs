@@ -13,11 +13,10 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 4,
-            VersionHotfix = 5,
+            VersionHotfix = 6,
             Changes = @"
-reduced max length for embed to 40
-made the bottom line of invisible ascii characters.
-made it 3 longer
+header limit = 100
+content limit = 800, 100 per line (automatic)
 "
         };
 

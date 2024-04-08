@@ -27,12 +27,12 @@ namespace ConsoleDiscordBot
         {
             await ctx.DeferAsync();
 
-            if (header.Length > 200)
+            if (header.Length > 100)
             {
                 DevConsoleCommands.CommandFailed(ctx.User, "BoxIt", new (string, string, string)[]
                 {
-                    ("header.Length", header.Length.ToString(), "<=200"),
-                }, "header was too long. [200 max]");
+                    ("header.Length", header.Length.ToString(), "<=100"),
+                }, "header was too long. [100 max]");
 
                 header = "Error";
                 content = "Header was too long.";
@@ -46,7 +46,7 @@ namespace ConsoleDiscordBot
                 }, "content was too long.");
 
                 header = "Error";
-                content = "Content was too long. [800 max, forced 200 per line]";
+                content = "Content was too long. [800 max, forced 100 per line]";
             }
 
             string[] contentLines = content.Split('\n');
@@ -54,10 +54,10 @@ namespace ConsoleDiscordBot
             foreach (var contentLine in contentLines)
             {
                 string line = contentLine;
-                while (line.Length > 200)
+                while (line.Length > 100)
                 {
-                    content += line[..200] + "\n";
-                    line = line[201..];
+                    content += line[..100] + "\n";
+                    line = line[101..];
                 }
                 content += line + "\n";
             }
