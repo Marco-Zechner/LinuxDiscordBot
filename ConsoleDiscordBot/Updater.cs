@@ -13,7 +13,7 @@ namespace ConsoleDiscordBot
             VersionMinor = 3,
             VersionHotfix = 15,
             Changes = @"
-- made bottom line even wider
+- lowered char limit for embed from 60 to 50
 "
         };
 
@@ -204,7 +204,7 @@ namespace ConsoleDiscordBot
 
                 FileStream fileStream = new("temp.txt", FileMode.Open);
 
-                if (infoBox.Split('\n')[0].Length > 60)
+                if (infoBox.Split('\n')[0].Length > 50)
                 {
                     await channel.SendMessageAsync(new DiscordMessageBuilder()
                     .WithContent($"```{infoBox}```")

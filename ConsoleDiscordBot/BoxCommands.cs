@@ -63,7 +63,7 @@ namespace ConsoleDiscordBot
                     thick: boxFormating == BoxFormating.allThick || boxFormating == BoxFormating.thickContent);
             }
 
-            if (boxedMessage.Split('\n')[0].Length > 60)
+            if (boxedMessage.Split('\n')[0].Length > 50)
             {
                 try
                 {
