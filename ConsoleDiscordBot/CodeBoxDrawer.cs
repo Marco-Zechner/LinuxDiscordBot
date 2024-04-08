@@ -92,12 +92,12 @@
                 bottomBoxChars = thickBox;
             }
 
-            string connectedBoxes = "";
+            string connectedBoxes = ".";
 
             string[] topLines = topBox.Split('\n');
             for (int i = 0; i < topLines.Length - 3; i++)
             {
-                connectedBoxes += new string(' ', charsToFillLeft + 1) + topLines[i] + new string(' ', horizontalCharsToFill - charsToFillLeft + 1) + "\n";
+                connectedBoxes += new string(' ', charsToFillLeft) + topLines[i] + new string(' ', horizontalCharsToFill - charsToFillLeft + 1) + "\n";
             }
 
             string[] bottomLines = bottomBox.Split('\n');

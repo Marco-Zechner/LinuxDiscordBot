@@ -11,9 +11,10 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 7,
+            VersionHotfix = 8,
             Changes = @"
-- fixed logging not working
+- added a dot in pos 0,0 of the box so mobile view draws the first spaces.
+- made it possible to draw only one box (box without header)
 "
         };
 

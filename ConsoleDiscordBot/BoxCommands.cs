@@ -19,8 +19,8 @@ namespace ConsoleDiscordBot
 
         [SlashCommand("BoxIt", "Boxes your message")]
         public async Task BoxIt(InteractionContext ctx,
-            [Option("header", "Header of the Box")] string header,
             [Option("content", "Content of the Box")] string content,
+            [Option("header", "Header of the Box")] string header = "",
             [Option("boxFormatting", "Use single or double Lines")] BoxFormating boxFormating = BoxFormating.thickHeader,
             [Option("headerAlignment", "Align the header from the left")] double headerAlignment = 0.5
             )
@@ -49,9 +49,19 @@ namespace ConsoleDiscordBot
                 content = "Content was too long.";
             }
 
-            string boxedMessage = CodeBoxDrawer.DrawBoxWithHeader(header, content, (float)headerAlignment, 
+            string boxedMessage = "";
+
+            if (string.IsNullOrEmpty(header) == false)
+            {
+                boxedMessage = CodeBoxDrawer.DrawBoxWithHeader(header, content, (float)headerAlignment,
                 thickHeader: boxFormating == BoxFormating.thickHeader || boxFormating == BoxFormating.allThick,
                 thickContent: boxFormating == BoxFormating.thickContent || boxFormating == BoxFormating.allThick);
+            }
+            else
+            {
+                boxedMessage = CodeBoxDrawer.DrawBox(content, 
+                    thick: boxFormating == BoxFormating.allThick || boxFormating == BoxFormating.thickContent);
+            }
 
             if (boxedMessage.Split('\n')[0].Length > 60)
             {
