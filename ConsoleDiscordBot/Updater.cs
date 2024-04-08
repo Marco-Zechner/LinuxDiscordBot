@@ -11,10 +11,9 @@ namespace ConsoleDiscordBot
             ChannelID = 0,
             VersionMajor = 1,
             VersionMinor = 3,
-            VersionHotfix = 13,
+            VersionHotfix = 14,
             Changes = @"
-- added line fix to connected Boxes
-- made line into spaces again
+- added switch from embed to message if codeblock is to wide (for updater)
 "
         };
 
@@ -205,13 +204,26 @@ namespace ConsoleDiscordBot
 
                 FileStream fileStream = new("temp.txt", FileMode.Open);
 
-                await channel.SendMessageAsync(new DiscordMessageBuilder()
+                if (infoBox.Split('\n')[0].Length > 60)
+                {
+                    await channel.SendMessageAsync(new DiscordMessageBuilder()
+                    .WithContent($"```{infoBox}```")
+                    .AddFile("changes.txt", fileStream, AddFileOptions.CloseStream)
+                    );
+                }
+                else
+                {
+                    await channel.SendMessageAsync(new DiscordMessageBuilder()
                     .AddEmbed(new DiscordEmbedBuilder()
                     {
                         Description = $"```{infoBox}```"
                     })
                     .AddFile("changes.txt", fileStream, AddFileOptions.CloseStream)
                     );
+                }
+
+
+
 
                 File.Delete($"{Program.ExeFolderPath}/updateBotInfo.json");
             }
