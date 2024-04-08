@@ -13,8 +13,8 @@ namespace ConsoleDiscordBot
             VersionMinor = 4,
             VersionHotfix = 7,
             Changes = @"
-header limit = 200
-content limit = 800, 200 per line (automatic)
+header limit = 130
+content limit = 800, 130 per line (automatic)
 "
         };
 
